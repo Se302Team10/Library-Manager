@@ -18,14 +18,14 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="663.0" prefWidth="908.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane fx:id="mainScreen" fx:controller="sample.Controller" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="663.0" prefWidth="908.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <center>
       <VBox spacing="10.0" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets />
          </BorderPane.margin>
          <children>
-            <TableView fx:id="tblView" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
+            <TableView fx:id="tableView" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
               <columns>
                 <TableColumn prefWidth="224.00003051757812" text="Catolog Name" />
                 <TableColumn prefWidth="123.199951171875" text="Catolog Type" />
@@ -126,7 +126,7 @@
    <left>
       <VBox prefHeight="506.0" prefWidth="222.0" spacing="10.0" BorderPane.alignment="CENTER">
          <children>
-            <ListView fx:id="lstView" prefHeight="465.0" prefWidth="222.0" VBox.vgrow="ALWAYS" />
+            <ListView fx:id="listView" prefHeight="465.0" prefWidth="222.0" VBox.vgrow="ALWAYS" />
             <HBox prefHeight="30.0" prefWidth="222.0" spacing="5.0">
                <children>
                   <Button fx:id="btnCatalogAdd" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0">
@@ -138,7 +138,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="btnCatalogEdit" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0">
+                  <Button fx:id="btnCatalogEdit" onAction="#editCatalog" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0">
                      <graphic>
                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                            <image>
