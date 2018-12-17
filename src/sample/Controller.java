@@ -423,8 +423,8 @@ public class Controller {
 
     }
 
-    @FXML
-    public void btnAddInput() {
+@FXML
+   public void btnAddInput() {
 
         if (listView.getSelectionModel().getSelectedItem() != null) {
             Dialog<ButtonType> dialog = new Dialog<>();
@@ -481,7 +481,46 @@ public class Controller {
         }
         }
 
+@FXML
+    public void btnCatalogDelete(){
 
+        if(listView.getSelectionModel().getSelectedItem()!=null){
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmation Dialog");
+            alert.setHeaderText("Hey! You Are Doing Something Risky !!");
+            alert.setContentText("Are you sure about to delete selected catalog?");
+            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+            stage.getIcons().add(new Image(this.getClass().getResource("/icons/error.png").toString()));
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK){
+                //dropSelectedCatalog(listView.getSelectionModel().getSelectedItem().toString());
+                int index= listView.getItems().indexOf(listView.getSelectionModel().getSelectedItem());
+                listView.getItems().remove(listView.getSelectionModel().getSelectedItem());
+
+                //ilgili method önce seçilen itemin metaTabledaki IDsini alacak
+                // sonra metaTable'dan seçilen katalog ismini silecek
+                //sonra alınan ID ye ait olan katalog tablosunu silecek.
+
+            } else {
+              //kullanıcı katalog silme işleminden vazgeçti
+            }
+
+
+
+        }else {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning Dialog");
+            alert.setHeaderText("Invalid Attempt");
+            alert.setContentText("No Catalog Item Selected");
+            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+            stage.getIcons().add(new Image(this.getClass().getResource("/icons/warning.png").toString()));
+
+            alert.showAndWait();
+
+        }
+
+    }
 
 
 

@@ -37,7 +37,7 @@
             </TableView>
             <HBox spacing="5.0">
                <children>
-                  <Button onAction="#btnAddInput" fx:id="btnAddInput" mnemonicParsing="false" prefHeight="34.0" prefWidth="103.0" text="Add" textFill="#3b0a0a">
+                  <Button fx:id="btnAddInput" mnemonicParsing="false" onAction="#btnAddInput" prefHeight="34.0" prefWidth="103.0" text="Add" textFill="#3b0a0a">
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
@@ -129,7 +129,7 @@
             <ListView fx:id="listView" prefHeight="465.0" prefWidth="222.0" VBox.vgrow="ALWAYS" />
             <HBox prefHeight="30.0" prefWidth="222.0" spacing="5.0">
                <children>
-                  <Button onAction="#btnCatalogAdd" fx:id="btnCatalogAdd" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0">
+                  <Button fx:id="btnCatalogAdd" mnemonicParsing="false" onAction="#btnCatalogAdd" prefHeight="30.0" prefWidth="30.0">
                      <graphic>
                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -147,7 +147,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="btnCatalogDelete" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0">
+                  <Button fx:id="btnCatalogDelete" mnemonicParsing="false" onAction="#btnCatalogDelete" prefHeight="30.0" prefWidth="30.0">
                      <graphic>
                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                            <image>
