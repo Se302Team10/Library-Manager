@@ -522,6 +522,37 @@ public class Controller {
 
     }
 
+@FXML
+    public void btnDeleteInput(){
+       if(tableView.getSelectionModel().getSelectedItem()!=null){
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Confirmation Dialog");
+            alert.setHeaderText("Hey! You Are Doing Something Risky !!");
+            alert.setContentText("Are you sure about to delete selected input?");
+            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+            stage.getIcons().add(new Image(this.getClass().getResource("/icons/error.png").toString()));
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK) {
+
+                ObservableList selectedItem = FXCollections.observableArrayList();
+                selectedItem = (ObservableList) tableView.getSelectionModel().getSelectedItem();
+                //database methodu 2. parametresinde aldığı observableListi 1. parametresinde aldığı ilgili catalog tablosundan bulup silecek
+                // deleteSelectedTupleFromCatalogTable(listView.getSelectionModel().getSelectedItem(),selectedItem);
+            }else{
+                //input silme işleminden vazgeçildi
+            }
+        }else{
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning Dialog");
+            alert.setHeaderText("Invalid Attempt");
+            alert.setContentText("No Catalog Item Selected");
+            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+            stage.getIcons().add(new Image(this.getClass().getResource("/icons/warning.png").toString()));
+            alert.showAndWait();
+        }
+
+}
+
 
 
 }

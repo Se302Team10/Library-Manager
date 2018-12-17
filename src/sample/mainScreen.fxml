@@ -58,7 +58,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="btnDeleteInput" mnemonicParsing="false" prefHeight="34.0" prefWidth="103.0" text="Delete">
+                  <Button fx:id="btnDeleteInput" mnemonicParsing="false" onAction="#btnDeleteInput" prefHeight="34.0" prefWidth="103.0" text="Delete">
                      <graphic>
                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                            <image>
