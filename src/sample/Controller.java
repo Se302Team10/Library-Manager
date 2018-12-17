@@ -423,6 +423,64 @@ public class Controller {
 
     }
 
+    @FXML
+    public void btnAddInput() {
+
+        if (listView.getSelectionModel().getSelectedItem() != null) {
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.initOwner(mainScreen.getScene().getWindow()); //Asssinging parrent of dialog pane
+            DialogPane dialogPane = new DialogPane();
+            dialog.setTitle("Add New Input");
+            VBox vBox = new VBox();
+            //Kayıt eklenmek istenen tablodaki kolon değerlerinin database'den tableClass.getColumnNames listesine geri döndürülmesi gerekiyor
+            //
+            //  TableClass returnedObject=returnHereTableClassObject(selectedListViewItem.toString()); /// //edit kısmında çağırılan methodla aynı olabilir.
+            TableClass returnObject = new TableClass();
+
+            TextField[] fields = new TextField[returnObject.getColumnNames().size()];
+            for (int i = 0; i < returnObject.getColumnNames().size(); i++) {
+                fields[i] = new TextField();
+                fields[i].setPromptText(returnObject.getColumnNames().get(i).toString().toUpperCase());
+                HBox hBox = new HBox();
+                hBox.getChildren().addAll(fields[i]);
+                vBox.getChildren().add(hBox);
+            }
+            Button buttonUpdate = new Button("Update My Input");
+            vBox.getChildren().add(buttonUpdate);
+            vBox.setSpacing(5);
+
+            buttonUpdate.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    /*
+                     * Kullanıcın girdiği veriler TableClasstan yaratılan nesnenin sahip olduğu userInputs listesine eklenecektir.
+                     * Bu liste sql Methodunu yazan sınıf tarafından parametre olarak alınacak.
+                     * */
+                    //createCatalogTable(tableClass.getUserInputs())
+                    ObservableList newRecord = FXCollections.observableArrayList();
+                    for (int i = 0; i < returnObject.getColumnNames().size(); i++) {
+                        //tableview will contains observableList objects therefore we can get selectedItem as an instance of ObservableList
+                        newRecord.add(fields[i].getText().trim().toUpperCase().toString());
+                    }
+                    // callTheUpdateRowSql(selectedItem,newInputs);
+                }
+            });
+            dialogPane.setContent(vBox);
+            dialog.getDialogPane().setContent(dialogPane);
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
+            dialog.getDialogPane().setContent(dialogPane);
+        }else{
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning Dialog");
+            alert.setHeaderText("Invalid Attempt");
+            alert.setContentText("No Catalog Item Selected");
+            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+            stage.getIcons().add(new Image(this.getClass().getResource("/icons/warning.png").toString()));
+
+            alert.showAndWait();
+        }
+        }
+
 
 
 

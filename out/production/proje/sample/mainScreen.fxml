@@ -37,7 +37,7 @@
             </TableView>
             <HBox spacing="5.0">
                <children>
-                  <Button fx:id="btnAddInput" mnemonicParsing="false" prefHeight="34.0" prefWidth="103.0" text="Add" textFill="#3b0a0a">
+                  <Button onAction="#btnAddInput" fx:id="btnAddInput" mnemonicParsing="false" prefHeight="34.0" prefWidth="103.0" text="Add" textFill="#3b0a0a">
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
