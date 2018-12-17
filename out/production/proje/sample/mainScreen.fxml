@@ -129,7 +129,7 @@
             <ListView fx:id="listView" prefHeight="465.0" prefWidth="222.0" VBox.vgrow="ALWAYS" />
             <HBox prefHeight="30.0" prefWidth="222.0" spacing="5.0">
                <children>
-                  <Button fx:id="btnCatalogAdd" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0">
+                  <Button onAction="#btnCatalogAdd" fx:id="btnCatalogAdd" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0">
                      <graphic>
                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                            <image>
