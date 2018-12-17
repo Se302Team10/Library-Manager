@@ -58,7 +58,7 @@ public class Controller {
     private Button btnCatalogDelete;
 
     public String selectedListViewItem;
-    public Object selectedTableViewItem;
+    public ObservableList selectedTableViewItem = FXCollections.observableArrayList();
 
     //listTempAttributes will be using to show added attributes in createCatalog/editCatalog dialogPane's listview
     public ObservableList<String> listTempAttributes = FXCollections.observableArrayList();
@@ -76,7 +76,9 @@ public class Controller {
 
         @Override
         public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-            selectedListViewItem=newValue.toString();
+            if (listView.getSelectionModel().getSelectedItem() != null) {
+                selectedListViewItem = newValue.toString();
+            }
         }
     });
     tableView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
@@ -84,7 +86,9 @@ public class Controller {
         @Override
         public void changed(ObservableValue observable, Object oldValue, Object newValue) {
             // Your action here
-            selectedTableViewItem=newValue;
+            if(tableView.getSelectionModel().getSelectedItem()!=null) {
+                selectedTableViewItem = (ObservableList) newValue;
+            }
         }
     });
 }
@@ -99,8 +103,8 @@ public class Controller {
          * this method will call a method that return TableClass Object**/
 
         /** This line will be activated after the called method impelemented**/
-        // TableClass returnedObject = returnHereTableClassObject(selectedListViewItem); ******** IMPORTANT *******
-
+        // TableClass returnedObject = returnHereTableClassObject(selectedListViewItem.toString()); ******** IMPORTANT *******
+        //it is going to use also in the editInput() method.
         TableClass returnedObject = new TableClass(); // this line will delete after that method implemented.
 
         /**  EXAMPLE TABLECLASS OBJECT **/
@@ -210,16 +214,13 @@ public class Controller {
 
                     tfAttribute.clear();
                 }else{
-                    Alert alert = new Alert(Alert.AlertType.WARNING);
-                    alert.setTitle("Warning Dialog");
-                    alert.setHeaderText("Attribute field cannot be empty");
-                    alert.setContentText("Careful with the next step!");
-
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error Dialog");
+                    alert.setHeaderText("Ooops, Wrong Attempt!");
+                    alert.setContentText("Attribute cannot be empty!");
+                    Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+                    stage.getIcons().add(new Image(this.getClass().getResource("/icons/error.png").toString()));
                     alert.showAndWait();
-
-                   // Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-                    // stage.getIcons().add(new Image(this.getClass().getResource("/icons/warning.png").toString()));
-
                 }
             }
         });  //addAttribute butonuna tıklanıldığında çalışacak kodlar
@@ -257,19 +258,15 @@ public class Controller {
                          *
                          * **/
                         //  callTheSQLUpdateMethod(returnedObject); **************** IMPORTANT ******************
-
-
                        editDialogPane.close();
                 }else{
-                    Alert alert = new Alert(Alert.AlertType.WARNING);
-                    alert.setTitle("Warning Dialog");
-                    alert.setHeaderText("Fill All the Required Fields");
-                    alert.setContentText("Careful with the next step! \n-Catalog name cannot be empty!\n-At least one attribute needed");
-
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error Dialog");
+                    alert.setHeaderText("Ooops, Wrong Attempt!");
+                    alert.setContentText("Careful with the next step! \n-Catalog name cannot be empty!\n-At least one attribute needed!");
+                    Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+                    stage.getIcons().add(new Image(this.getClass().getResource("/icons/error.png").toString()));
                     alert.showAndWait();
-
-                    // Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-                    // stage.getIcons().add(new Image(this.getClass().getResource("/icons/warning.png").toString()));
                 }
             }
         }); //Create Catalog Butonuna basıldığında çalışacak kodlar
@@ -286,14 +283,113 @@ public class Controller {
         alert.setTitle("Error Dialog");
         alert.setHeaderText("Ooops, Wrong Attempt!");
         alert.setContentText("No Catalog Selected");
-
-        //  Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-       // stage.getIcons().add(new Image(this.getClass().getResource("/icons/error.png").toString()));
-
-
+          Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image(this.getClass().getResource("/icons/error.png").toString()));
         alert.showAndWait();
 
     }
 }
+
+@FXML
+    public void btnEditInput(){
+
+        if(tableView.getSelectionModel().getSelectedItem()!=null){
+
+            Dialog<ButtonType> dialog=new Dialog<>();
+            dialog.initOwner(mainScreen.getScene().getWindow()); //Asssinging parrent of dialog pane
+
+            DialogPane dialogPane=new DialogPane();
+            dialog.setTitle("Update Record");
+            VBox vBoxMainFrame = new VBox();
+
+         /**
+          * returnHereTableClassObject(selectedListViewItem);
+          * the method  will return the same daha like btnEditCatalog
+          *
+          * according to return value btnEditInput method will create input textfields to let the user update old input.**/
+       //  TableClass returnedObject=returnHereTableClassObject(selectedListViewItem.toString()); ///**** IMPORTANT it will be activated
+
+            TableClass ReturnedObject= new TableClass();
+
+            ReturnedObject.setColumnNames("Name");
+            ReturnedObject.setColumnNames("Year");
+            ReturnedObject.setColumnNames("Genree");
+
+            TextField[] textFields = new TextField[ReturnedObject.getColumnNames().size()];
+            for (int i = 0; i < ReturnedObject.getColumnNames().size();i++){
+
+              //  Label label = new Label(sampleReturnedObject.getColumnNames().get(i).toString().toUpperCase());
+                textFields[i]=new TextField();
+                textFields[i].setPromptText(ReturnedObject.getColumnNames().get(i).toString().toUpperCase());
+                HBox hBox =new HBox();
+                hBox.getChildren().addAll(textFields[i]);
+                vBoxMainFrame.getChildren().add(hBox);
+
+            }
+
+            Button buttonUpdate =new Button("Update My Input");
+            vBoxMainFrame.getChildren().add(buttonUpdate);
+            vBoxMainFrame.setSpacing(5);
+
+            buttonUpdate.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+
+                /** callTheUpdateRowSql();
+                 * firstly, the method must find the exact same row from the database according to user selection on tablview
+                 * (first paramater will provide those existing/old information)
+                 *
+                 *then
+                 *
+                 *
+                 * it must execute update sql and set new inputs into database from a list which is in second paramater
+                 * Assume sending list in as parameters as ObservableList;
+                 *
+                 * you can get items of observablelist like this
+                 *
+                 *ObservableList myList = FXCollections.observableArrayList();
+                 *  for (int i = 0; i<myList.size();i++){
+                 System.out.println(i+".item: " + myList.get(i));
+                 }
+                 * **/
+                    ObservableList selectedItem = FXCollections.observableArrayList();
+                    ObservableList newInputs = FXCollections.observableArrayList();
+
+                    for (int i = 0; i<ReturnedObject.getColumnNames().size();i++){
+                        //tableview will contains observableList objects therefore we can get selectedItem as an instance of ObservableList
+                        selectedItem.add(tableView.getSelectionModel().getSelectedItem());
+                        newInputs.add(textFields[i].getText().trim().toUpperCase().toString());
+
+                    }
+
+                  // callTheUpdateRowSql(selectedItem,newInputs);
+
+                }
+            });
+            dialogPane.setContent(vBoxMainFrame);
+            dialog.getDialogPane().setContent(dialogPane);
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+            //alt satırda, dialog gösterildikten sonra bir sonuç için bekle (showAndWait) komutulya kullanıcının hangi butona bastığını geri döndürüyoruz.
+            Optional<ButtonType> result =dialog.showAndWait();
+            dialogPane.setPrefWidth(Region.USE_COMPUTED_SIZE); //dialog penceresinin genişliği içindeki nesnelerin kullanacağı kadar belirleniyor.
+            dialogPane.setPrefHeight(Region.USE_COMPUTED_SIZE); //dialog penceresinin yüksekliği içindeki nesnelerin kullanacağı kadar belirleniyor.
+            dialog.getDialogPane().setContent(dialogPane);
+        }else{
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error Dialog");
+            alert.setHeaderText("Ooops, Wrong Attempt!");
+            alert.setContentText("No row selected from the table");
+              Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+             stage.getIcons().add(new Image(this.getClass().getResource("/icons/error.png").toString()));
+            alert.showAndWait();
+
+        }
+
+
+
+
+}
+
+
 }
 

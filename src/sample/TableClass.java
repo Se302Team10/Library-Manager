@@ -1,5 +1,8 @@
 package sample;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.util.ArrayList;
 
 public class TableClass {
@@ -10,7 +13,7 @@ public class TableClass {
     private String catalogName;
     private ArrayList<String> columnNames = new ArrayList<>();
     private ArrayList<String> columnDataTypes = new ArrayList<>();
-    private ArrayList<String> userInputs = new ArrayList<>();
+    private ObservableList<String> userInputs = FXCollections.observableArrayList();
 
     public String getCatalogName() {
         return catalogName;
@@ -36,7 +39,7 @@ public class TableClass {
         this.columnDataTypes.add(columnDataType);
     }
 
-    public ArrayList<String> getUserInputs() {
+    public ObservableList<String> getUserInputs() {
         return userInputs;
     }
 
