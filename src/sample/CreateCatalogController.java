@@ -105,10 +105,10 @@ public class CreateCatalogController {
                     System.out.println("CATALOG İSMİ" + tableClass.getCatalogName().toString());
                     Controller controller = new Controller();
                     controller.listCatalogNames.add(tfCatalogName.getText().trim().toUpperCase(Locale.ENGLISH).toString());
-                    System.out.println("basıldı");
 
-                    //theMethodWillCreateCatalogTable(tableClass);
-                    //table class objesi tablonun Katalog adı (tableClass.getCatalogName
+                    databasemanagement dbcreate = new databasemanagement();
+                    dbcreate.createNewTable(tableClass);
+                    //table class objesi tablonun Katalog adı (tableClass.getCatalogName)
                     //kolon isimleri ve veri tiplerini içeriyor tableClass.getColumnNames , tableClass.getDataTypes
 
                 }else{

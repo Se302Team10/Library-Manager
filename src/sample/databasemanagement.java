@@ -4,9 +4,13 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.lang.*;
+
 
 import java.sql.ResultSet;
 public class databasemanagement {
+
+
     /**
      * Connect to the test.db database
      *
@@ -25,16 +29,19 @@ public class databasemanagement {
     }
 
 
-    public void InsertMetatable(String name) { //insert in to meta table is here
+    public int InsertMetatable(String name) { //insert in to meta table is here
         String sql = "INSERT INTO metatable(name) VALUES(?)";
+
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, name);
             pstmt.executeUpdate();
+            return pstmt.getGeneratedKeys().getInt(1);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+       return -1;
     }
 
 // KEY'İN OTO INCREMENT DOĞASI GEREĞİ BÜTÜN rowların silinmesi oto increment'de hala daha en son verdiği numaradan devam ettiriyor.
@@ -44,19 +51,16 @@ public class databasemanagement {
      * Create a new table in the test database
      *
      */
-    public  void createNewTable() {
-        // SQLite connection string
-        String url = "jdbc:sqlite:C:/Users/bulut/IdeaProjects/Library-Manager/src/db/librarymanager.db";
-        String userdefined1 = "this will be acuired from the user";
-        String userdefined2 = "this will be acuired from the user";
-        String userdefined3 = "this will be acuired from the user";//This will be in a proper loop structure after we include it to the front end
+    public  void createNewTable(TableClass tableClass) {
+        int key =InsertMetatable(tableClass.getCatalogName());
+         String str = String.valueOf(key);
 
-        // SQL statement for creating a new table
-        String sql = "CREATE TABLE IF NOT EXISTS "+userdefined1+" (\n"
-                + "	id integer PRIMARY KEY,\n" //this will always be here, and this ID will = id from the metatable
-                + "	"+userdefined2+" varchar NOT NULL,\n"
-                + "	"+userdefined3+" varchar NOT NULL,\n"
-                + ");"; // will be in a loop
+
+        String sql = "CREATE TABLE  '"+str+"'  (\n"
+                + "	id integer PRIMARY KEY,\n"
+                + "	name text NOT NULL,\n"
+                + "	capacity real\n"
+                + ");";
 
         try (Connection conn = this.connect();
              Statement stmt = conn.createStatement())
