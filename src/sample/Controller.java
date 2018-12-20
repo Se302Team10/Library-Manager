@@ -65,7 +65,7 @@ public class Controller {
     //listTempAttributes will be using to show added attributes in createCatalog/editCatalog dialogPane's listview
     public ObservableList<String> listTempAttributes = FXCollections.observableArrayList();
 
-    public ObservableList<String> listCatalogNames = FXCollections.observableArrayList(); // anapenceredeki listview'bilgileri burdan çekiliyor
+    public static ObservableList<String> listCatalogNames = FXCollections.observableArrayList(); // anapenceredeki listview'bilgileri burdan çekiliyor
 
 
 
@@ -73,7 +73,7 @@ public class Controller {
     public void initialize(){
 
         listView.setItems(listCatalogNames);
-        listCatalogNames.add("SampleCatalog");
+     //   listCatalogNames.add("SampleCatalog"); //sample catalog burdan gözüküyor
     listView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
 
         @Override
@@ -109,7 +109,7 @@ public class Controller {
         //it is going to use also in the editInput() method.
         TableClass returnedObject = new TableClass(); // this line will delete after that method implemented.
 
-        /**  EXAMPLE TABLECLASS OBJECT **/
+        /**  EXAMPLE TABLECLASS OBJECT
 
         returnedObject.setCatalogName("Books");
 
