@@ -71,5 +71,41 @@ public class databasemanagement {
             System.out.println(e.getMessage());
         }
     }
+    public void deleteRow(){
+        String sql = "DELETE FROM metatable WHERE name = ?";
+        try (Connection conn = this.connect();)
+        {
+            PreparedStatement st = conn.prepareStatement(sql);
+            st.setString(1;
+            st.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+
+    }
+
+
+    public void editRow()
+    {    int key = 0;
+        String sql = "update metatable set name = ? where id = 1  ";
+
+
+        try (Connection conn = this.connect();)
+        {
+
+            PreparedStatement preparedStmt = conn.prepareStatement(sql);
+
+            preparedStmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+
+    }
 
 }
+
+
+
