@@ -26,6 +26,9 @@ public class TableClass {
     public ArrayList<String> getColumnNames() {
         return columnNames;
     }
+    public String getSpesificColumnName(int i) {
+        return columnNames.get(i);
+    }
 
     public void setColumnNames(String columnName) {
         this.columnNames.add(columnName);

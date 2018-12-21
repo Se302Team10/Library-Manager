@@ -53,30 +53,46 @@ public class databasemanagement {
      */
     public  void createNewTable(TableClass tableClass) {
         int key =InsertMetatable(tableClass.getCatalogName());
-         String str = String.valueOf(key);
+        String str = String.valueOf(key);
+        StringBuilder dynamicString = new StringBuilder("CREATE TABLE '"+str+"' ("   +"id integer PRIMARY KEY AUTOINCREMENT, ");
 
+        int loopCtrl = tableClass.getColumnNames().size();
+         for(int i = 0; i<loopCtrl ; i++ ) {
+             final int index = i;
+             dynamicString.append(tableClass.getSpesificColumnName(index) + " text");
+             if(i!=loopCtrl-1) dynamicString.append(", ");
+//              if (i != 0 && loopCtrl == i -1 ) { //spesifik column name yerine non spesifik olarak bakıp burda çevirmeye çalışacağız
+//                  dynamicString.append(" "+tableClass.getSpesificColumnName(index).toString().substring(1,tableClass.getSpesificColumnName(index).toString().length() - 1)+"  text");
+//              } else {
+//                  dynamicString.append(" " + tableClass.getSpesificColumnName(index).toString().substring(1, tableClass.getSpesificColumnName(index).toString().length() - 1) + "  text,");
+//              }
+        }
+         dynamicString.append(");");
 
         String sql = "CREATE TABLE  '"+str+"'  (\n"
                 + "	id integer PRIMARY KEY,\n"
                 + "	name text NOT NULL,\n"
                 + "	capacity real\n"
                 + ");";
-
+        System.out.println(dynamicString.toString());
+        System.out.println(sql);
         try (Connection conn = this.connect();
              Statement stmt = conn.createStatement())
         {
             // create a new table
-            stmt.execute(sql);
+            stmt.execute(dynamicString.toString());
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
     public void deleteRow(){
-        String sql = "DELETE FROM metatable WHERE name = ?";
+        int key = 0;
+        String str = String.valueOf(key);
+        String sql = "DELETE FROM metatable WHERE id ='"+str+"' " ;
         try (Connection conn = this.connect();)
         {
             PreparedStatement st = conn.prepareStatement(sql);
-            st.setString(1;
+
             st.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
