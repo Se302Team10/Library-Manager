@@ -18,7 +18,7 @@ public class databasemanagement {
      */
     private Connection connect() { //main connection to database originates from here
         // SQLite connection string
-        String url = "jdbc:sqlite:C:/Users/bulut/IdeaProjects/Library-Manager/src/db/librarymanager.db";
+        String url = "jdbc:sqlite:src/librarymanager.db";
         Connection conn = null;
         try {
             conn = DriverManager.getConnection(url);
@@ -69,13 +69,9 @@ public class databasemanagement {
         }
          dynamicString.append(");");
 
-        String sql = "CREATE TABLE  '"+str+"'  (\n"
-                + "	id integer PRIMARY KEY,\n"
-                + "	name text NOT NULL,\n"
-                + "	capacity real\n"
-                + ");";
+
         System.out.println(dynamicString.toString());
-        System.out.println(sql);
+
         try (Connection conn = this.connect();
              Statement stmt = conn.createStatement())
         {
