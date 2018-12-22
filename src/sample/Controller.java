@@ -16,7 +16,6 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-
 import javax.swing.text.html.ImageView;
 import java.util.Locale;
 import java.util.Optional;
@@ -25,9 +24,6 @@ public class Controller {
 
     @FXML
     private BorderPane mainScreen;
-
-    @FXML
-    private TableView<?> tableView;
 
     @FXML
     private Button btnAddInput;
@@ -66,24 +62,34 @@ public class Controller {
     public ObservableList<String> listTempAttributes = FXCollections.observableArrayList();
 
     public static ObservableList<String> listCatalogNames = FXCollections.observableArrayList(); // anapenceredeki listview'bilgileri burdan çekiliyor
-
-
+    public TableView<ObservableList> tableView = new TableView<ObservableList>();
 
     @FXML
     public void initialize(){
+
+        mainScreen.setCenter(tableView);
+        if(listCatalogNames.size()!=0){
+            listView.getSelectionModel().selectFirst();
+        }
         databasemanagement dbcreate = new databasemanagement();
         listCatalogNames.setAll(dbcreate.metaTableSelect());
         listView.setItems(listCatalogNames);
-     //   listCatalogNames.add("SampleCatalog"); //sample catalog burdan gözüküyor
-    listView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+
+        //catalog list listener codes
+        listView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
 
         @Override
         public void changed(ObservableValue observable, Object oldValue, Object newValue) {
             if (listView.getSelectionModel().getSelectedItem() != null) {
                 selectedListViewItem = newValue.toString(); //
+
+                //katalog tablosu methodu burdan çağırlacak
+
             }
         }
     });
+
+
     tableView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
 
         @Override
