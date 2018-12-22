@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.lang.*;
-
+import java.util.ArrayList;
 
 import java.sql.ResultSet;
 public class databasemanagement {
@@ -117,18 +117,31 @@ public class databasemanagement {
 
     }
 
-}
+ public ArrayList<String> metaTableSelect () {
+        TableClass metaQuery = new TableClass();
+        String sql = "Select name From metatable";
+        try ( Connection conn = this.connect();
+              Statement  stmt = conn.createStatement();
+              ResultSet  rs   = stmt.executeQuery(sql);  ) {
+            while(rs.next()) {
+                    metaQuery.setColumnNames(rs.getString("name"));
+            }
+            return metaQuery.getColumnNames();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+ }
 
 
-    //Paramatredeki tablonun attributelarını elde etmek için.
+    /*Paramatredeki tablonun attributelarını elde etmek için.
     public void getTableAttributes(String tableName) {
 
-        String sql = "PRAGMA table_info("+tableName+");";
+        String sql = "PRAGMA table_info(" + tableName + ");";
 
 
         try (Connection conn = this.connect();
-             Statement stmt = conn.createStatement())
-        {
+             Statement stmt = conn.createStatement()) {
 
             ResultSet tableResults = stmt.executeQuery(sql);
             while (tableResults.next()) {
@@ -141,48 +154,50 @@ public class databasemanagement {
             System.out.println(e.getMessage());
         }
 
-
     }
 //Tabledan gelen attribute bilgilerini tutmak için.
-public class Attribute {
+        public class Attribute {
 
-    String name;
-    String type;
+            String name;
+            String type;
 
-}
-    public void editTable(String tableName) {
-
-        String sql = "ALTER TABLE " + tableName+ "\n";
-
-        ArrayList<Attribute> newAttributes = new ArrayList<>(); //Tabloya yeni eklenen attribute'lar burada tutulabilir.
-
-        Attribute at1 = new Attribute(); //Bu data mevcut table'ın attribute'unu simule etmek için oluşturuldu.
-        at1.name = "title";
-        at1.type = "TEXT";
-
-        Attribute at2 = new Attribute(); //Bu data mevcut table'ın attribute'unu simule etmek için oluşturuldu.
-        at2.name = "author";
-        at2.type = "TEXT";
-
-        newAttributes.add(at1);
-        newAttributes.add(at2);
-
-        for (Attribute at : newAttributes) {
-
-            sql += "ADD COLUMN " + at.name + " " + at.type + "\n";
         }
+        public void editTable (String tableName){
 
-        sql += ";";
+            String sql = "ALTER TABLE " + tableName + "\n";
 
-        try (Connection conn = this.connect();
-             Statement stmt = conn.createStatement())
-        {
+            ArrayList<Attribute> newAttributes = new ArrayList<>(); //Tabloya yeni eklenen attribute'lar burada tutulabilir.
 
-            stmt.executeQuery(sql);
+            Attribute at1 = new Attribute(); //Bu data mevcut table'ın attribute'unu simule etmek için oluşturuldu.
+            at1.name = "title";
+            at1.type = "TEXT";
+
+            Attribute at2 = new Attribute(); //Bu data mevcut table'ın attribute'unu simule etmek için oluşturuldu.
+            at2.name = "author";
+            at2.type = "TEXT";
+
+            newAttributes.add(at1);
+            newAttributes.add(at2);
+
+            for (Attribute at : newAttributes) {
+
+                sql += "ADD COLUMN " + at.name + " " + at.type + "\n";
+            }
+
+            sql += ";";
+
+            try (Connection conn = this.connect();
+                 Statement stmt = conn.createStatement()) {
+
+                stmt.executeQuery(sql);
 
 
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+
         }
+*/
 
-    }
+
+ }

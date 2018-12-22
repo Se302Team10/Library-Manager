@@ -71,7 +71,8 @@ public class Controller {
 
     @FXML
     public void initialize(){
-
+        databasemanagement dbcreate = new databasemanagement();
+        listCatalogNames.setAll(dbcreate.metaTableSelect());
         listView.setItems(listCatalogNames);
      //   listCatalogNames.add("SampleCatalog"); //sample catalog burdan gözüküyor
     listView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
@@ -79,7 +80,7 @@ public class Controller {
         @Override
         public void changed(ObservableValue observable, Object oldValue, Object newValue) {
             if (listView.getSelectionModel().getSelectedItem() != null) {
-                selectedListViewItem = newValue.toString();
+                selectedListViewItem = newValue.toString(); //
             }
         }
     });

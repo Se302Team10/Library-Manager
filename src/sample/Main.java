@@ -18,8 +18,7 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
-   //     databasemanagement db = new databasemanagement();
-       // db.InsertMetatable("test");  for test purpouses
+
         launch(args);
     }
 }
