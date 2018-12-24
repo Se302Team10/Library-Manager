@@ -32,6 +32,9 @@ public class Controller {
     private Button btnEditInput;
 
     @FXML
+    private MenuItem menuItemHelp;
+
+    @FXML
     private Button btnDeleteInput;
 
     @FXML
@@ -560,6 +563,37 @@ public class Controller {
 
 }
 
+@FXML
+    public void showHelpDialog(){
+
+    try {
+        Dialog<ButtonType> dialog2 = new Dialog<ButtonType>();
+        dialog2.initOwner(mainScreen.getScene().getWindow());
+        FXMLLoader fxmlLoader=new FXMLLoader();
+        fxmlLoader.setLocation(getClass().getResource("helpScreen.fxml"));
+        dialog2.setTitle("Manual");
+        Stage stage2 = (Stage) dialog2.getDialogPane().getScene().getWindow();
+        stage2.getIcons().add(new Image(this.getClass().getResource("/icons/add.png").toString()));
+        Parent dialogContent =fxmlLoader.load();
+        dialog2.getDialogPane().setContent(dialogContent);
+        dialog2.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        //sonuc nesnesini gönderir
+        Optional<ButtonType> result =dialog2.showAndWait();
+        if(result.get()==ButtonType.CLOSE) {
+        }
+    } catch (Exception e) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error Dialog");
+        alert.setHeaderText("Ooops, Page Could NOT Found!");
+        alert.setContentText("Something went wrong!");
+        Stage stage2 = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage2.getIcons().add(new Image(this.getClass().getResource("/icons/error.png").toString()));
+        alert.showAndWait();
+    }
+
+    }
+//konuşamayacak durumda mısın?
+    //kanka arıyom telfondan ordan konuşalım ok
 
 
 }
