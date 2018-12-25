@@ -162,7 +162,8 @@ public class databasemanagement {
     }
 
     public void   TableFiller (String metaID,TableView table,ObservableList<ObservableList> tableList ) {
-        // table.getColumns().clear();
+        table.getColumns().clear();
+        tableList.clear();
         String sql = "Select * From '"+metaID+"' ";
         try ( Connection conn = this.connect();
               Statement  stmt = conn.createStatement();
