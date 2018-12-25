@@ -162,12 +162,14 @@ public class databasemanagement {
     }
 
     public void   TableFiller (String metaID,TableView table,ObservableList<ObservableList> tableList ) {
-        // table.getColumns().clear();
+
+        table.getColumns().clear();
+        tableList.clear();
         String sql = "Select * From '"+metaID+"' ";
         try ( Connection conn = this.connect();
               Statement  stmt = conn.createStatement();
               ResultSet  rs   = stmt.executeQuery(sql);  ) {
-            for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
+            for (int i = 1; i < rs.getMetaData().getColumnCount(); i++) {
                 //We are using non property style for making dynamic table
                 final int j = i;
                 TableColumn col = new TableColumn(rs.getMetaData().getColumnName(i + 1));

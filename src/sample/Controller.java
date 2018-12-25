@@ -4,6 +4,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -63,6 +64,9 @@ public class Controller {
     @FXML
     private Button btnCatalogDelete;
 
+    @FXML
+    private TextField tfSearchCatalog;
+
     public String selectedListViewItem;
     public ObservableList selectedTableViewItem = FXCollections.observableArrayList();
 
@@ -76,14 +80,27 @@ public class Controller {
 
     @FXML
     public void initialize(){
-
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         mainScreen.setCenter(tableView);
         if(listCatalogNames.size()!=0){
             listView.getSelectionModel().selectFirst();
         }
         databasemanagement dbcreate = new databasemanagement();
         listCatalogNames.setAll(dbcreate.metaTableSelect());
-        listView.setItems(listCatalogNames);
+
+
+        FilteredList<String> filteredData = new FilteredList<>(listCatalogNames, s -> true);
+        tfSearchCatalog.textProperty().addListener(obs->{
+            String filter = tfSearchCatalog.getText().trim().toUpperCase();
+            if(filter == null || filter.length() == 0) {
+                filteredData.setPredicate(s -> true);
+            }
+            else {
+                filteredData.setPredicate(s -> s.toUpperCase().contains(filter));
+            }
+        });
+
+        listView.setItems(filteredData);
 
         //catalog list listener codes
         listView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
@@ -104,7 +121,7 @@ public class Controller {
         }
     });
 
-
+    //tableview listener ! it returns selected row! ******************* TABLEVIEW SELECTED ITEM!!!!!
     tableView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
 
         @Override
@@ -112,6 +129,14 @@ public class Controller {
             // Your action here
             if(tableView.getSelectionModel().getSelectedItem()!=null) {
                 selectedTableViewItem = (ObservableList) newValue;
+
+                System.out.println("selected item of table"+ (ObservableList) newValue);
+                System.out.println("another way to get");
+                for (int i =0;i<((ObservableList) newValue).size();i++){
+                    //0 dan başlatılırsa ID değeri de geliyor! id + diğer kolonlar!
+                    System.out.println(((ObservableList) newValue).get(i).toString());
+                }
+
             }
         }
     });
@@ -463,15 +488,24 @@ public class Controller {
             for (int i = 0; i < returnObject.getColumnNames().size(); i++) {
                 fields[i] = new TextField();
                 fields[i].setPromptText(returnObject.getColumnNames().get(i).toString().toUpperCase());
-                HBox hBox = new HBox();
-                hBox.getChildren().addAll(fields[i]);
-                vBox.getChildren().add(hBox);
+
+                vBox.getChildren().add(fields[i]);
             }
-            Button buttonUpdate = new Button("Update My Input");
-            vBox.getChildren().add(buttonUpdate);
+            Button buttonInsert = new Button("Add My Input");
+            vBox.getChildren().add(buttonInsert);
             vBox.setSpacing(5);
 
-            buttonUpdate.setOnAction(new EventHandler<ActionEvent>() {
+            dialogPane.setContent(vBox);
+            dialog.getDialogPane().setContent(dialogPane);
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+
+            dialogPane.setPrefWidth(Region.USE_COMPUTED_SIZE);
+            dialogPane.setPrefHeight(Region.USE_COMPUTED_SIZE);
+            dialog.getDialogPane().setContent(dialogPane);
+            dialog.showAndWait();
+
+
+            buttonInsert.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
                     /*
