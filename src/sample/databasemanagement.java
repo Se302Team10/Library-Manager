@@ -132,72 +132,35 @@ public class databasemanagement {
         }
         return null;
  }
-
-
-    /*Paramatredeki tablonun attributelarını elde etmek için.
-    public void getTableAttributes(String tableName) {
-
-        String sql = "PRAGMA table_info(" + tableName + ");";
-
-
-        try (Connection conn = this.connect();
-             Statement stmt = conn.createStatement()) {
-
-            ResultSet tableResults = stmt.executeQuery(sql);
-            while (tableResults.next()) {
-                System.out.println(tableResults.getString("name"));
-                System.out.println(tableResults.getString("type"));
-
-            }
-
+    public String metaId (String clicked) {
+        String sql = "select id from metatable where name = '"+clicked+"' ";
+        String str ;
+        try ( Connection conn = this.connect();
+              Statement  stmt = conn.createStatement();
+              ResultSet  rs   = stmt.executeQuery(sql);  ) {
+            str = String.valueOf(rs.getInt("id"));
+            return str;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-
+        return null;
     }
-//Tabledan gelen attribute bilgilerini tutmak için.
-        public class Attribute {
 
-            String name;
-            String type;
-
-        }
-        public void editTable (String tableName){
-
-            String sql = "ALTER TABLE " + tableName + "\n";
-
-            ArrayList<Attribute> newAttributes = new ArrayList<>(); //Tabloya yeni eklenen attribute'lar burada tutulabilir.
-
-            Attribute at1 = new Attribute(); //Bu data mevcut table'ın attribute'unu simule etmek için oluşturuldu.
-            at1.name = "title";
-            at1.type = "TEXT";
-
-            Attribute at2 = new Attribute(); //Bu data mevcut table'ın attribute'unu simule etmek için oluşturuldu.
-            at2.name = "author";
-            at2.type = "TEXT";
-
-            newAttributes.add(at1);
-            newAttributes.add(at2);
-
-            for (Attribute at : newAttributes) {
-
-                sql += "ADD COLUMN " + at.name + " " + at.type + "\n";
+    public TableClass TableFiller (String metaID) {
+        TableClass metaQuery = new TableClass();
+        String sql = "Select * From '"+metaID+"' ";
+        try ( Connection conn = this.connect();
+              Statement  stmt = conn.createStatement();
+              ResultSet  rs   = stmt.executeQuery(sql);  ) {
+            while(rs.next()) {
+                metaQuery.setColumnNames(rs.getString("name"));
             }
-
-            sql += ";";
-
-            try (Connection conn = this.connect();
-                 Statement stmt = conn.createStatement()) {
-
-                stmt.executeQuery(sql);
-
-
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
-
+            return metaQuery;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
-*/
+        return null;
+    }
 
 
  }

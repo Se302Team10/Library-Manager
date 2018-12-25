@@ -592,8 +592,7 @@ public class Controller {
     }
 
     }
-//konuşamayacak durumda mısın?
-    //kanka arıyom telfondan ordan konuşalım ok
+
 
 
 }
