@@ -19,6 +19,11 @@ import javafx.stage.Stage;
 import javax.swing.text.html.ImageView;
 import java.util.Locale;
 import java.util.Optional;
+import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.scene.control.TableView;
+import javafx.util.Callback;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.scene.control.TableView;
 
 public class Controller {
 
@@ -66,6 +71,8 @@ public class Controller {
 
     public static ObservableList<String> listCatalogNames = FXCollections.observableArrayList(); // anapenceredeki listview'bilgileri burdan çekiliyor
     public TableView<ObservableList> tableView = new TableView<ObservableList>();
+    //private TableView table;
+    private ObservableList<ObservableList> at = FXCollections.observableArrayList();
 
     @FXML
     public void initialize(){
@@ -85,6 +92,11 @@ public class Controller {
         public void changed(ObservableValue observable, Object oldValue, Object newValue) {
             if (listView.getSelectionModel().getSelectedItem() != null) {
                 selectedListViewItem = newValue.toString(); //
+                dbcreate.TableFiller(dbcreate.metaId(selectedListViewItem),tableView,at);
+
+
+
+
 
                 //katalog tablosu methodu burdan çağırlacak
 

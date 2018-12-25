@@ -1,4 +1,19 @@
 package sample;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
+import javafx.scene.Scene;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.scene.control.TableView;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import javafx.util.Callback;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -146,21 +161,45 @@ public class databasemanagement {
         return null;
     }
 
-    public TableClass TableFiller (String metaID) {
-        TableClass metaQuery = new TableClass();
+    public void   TableFiller (String metaID,TableView table,ObservableList<ObservableList> tableList ) {
+        // table.getColumns().clear();
         String sql = "Select * From '"+metaID+"' ";
         try ( Connection conn = this.connect();
               Statement  stmt = conn.createStatement();
               ResultSet  rs   = stmt.executeQuery(sql);  ) {
-            while(rs.next()) {
-                metaQuery.setColumnNames(rs.getString("name"));
+            for (int i = 0; i < rs.getMetaData().getColumnCount(); i++) {
+                //We are using non property style for making dynamic table
+                final int j = i;
+                TableColumn col = new TableColumn(rs.getMetaData().getColumnName(i + 1));
+                col.setCellValueFactory(new Callback<CellDataFeatures<ObservableList, String>, ObservableValue<String>>() {
+                    public ObservableValue<String> call(CellDataFeatures<ObservableList, String> param) {
+                        return new SimpleStringProperty(param.getValue().get(j).toString());
+                    }
+                });
+
+                table.getColumns().addAll(col);
+                System.out.println("Column [" + i + "] ");
             }
-            return metaQuery;
+            while (rs.next()) {
+                //Iterate Row
+                ObservableList<String> row = FXCollections.observableArrayList();
+                for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
+                    //Iterate Column
+                    row.add(rs.getString(i));
+                }
+                System.out.println("Row [1] added " + row);
+                tableList.add(row);
+
+            }
+
+            table.setItems(tableList);
+
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            System.out.println("Error on Building Data");
         }
-        return null;
-    }
 
+    }
 
  }
