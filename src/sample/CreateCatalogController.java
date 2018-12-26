@@ -45,7 +45,7 @@ public class CreateCatalogController {
     @FXML
     public void initialize(){
 
-        Scene scene = new Scene(dialogPaneCreateCatalog);
+      //  Scene scene = new Scene(dialogPaneCreateCatalog);
 
 
         TableClass tableClass = new TableClass();
@@ -58,6 +58,23 @@ public class CreateCatalogController {
             @Override
             public void handle(ActionEvent event) {
 
+
+                String userText=tfAttribute.getText().trim().toUpperCase(Locale.ENGLISH);
+                String alphabet="ABCDEFGHUKLMNIOPQRSTVXYZ_";
+                try {
+
+                    String letter;
+                    for(int i =0;i<userText.length();i++) {
+                        letter = String.valueOf(userText.charAt(i));
+
+                        if (!alphabet.contains(letter.toUpperCase(Locale.ENGLISH))){
+                            throw new NumberFormatException();
+                        }
+
+                    }
+
+
+            
                 if(!tfAttribute.getText().trim().isEmpty() && (!tempAttributeList.contains(tfAttribute.getText().toUpperCase(Locale.ENGLISH).toString().trim()+","+cbDataType.getValue().toString()) || (!tempAttributeList.contains(tfAttribute.getText().toUpperCase(Locale.ENGLISH).toString().trim()+","+cbDataType.getValue().toString())) )){
 
                     tableClass.setColumnNames(tfAttribute.getText().toUpperCase(Locale.ENGLISH).toString().trim());
@@ -73,7 +90,17 @@ public class CreateCatalogController {
                     stage2.getIcons().add(new Image(this.getClass().getResource("/icons/error.png").toString()));
                     alert.showAndWait();
                 }
+                }catch (NumberFormatException e){
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error Dialog");
+                    alert.setHeaderText("Ooops, Wrong Attempt!");
+                    alert.setContentText("Make sure you are filling attribute name correctly\nYOU CAN ENTER ONLY TEXT\nSpecial Characters Cannot Use Except '_'\n");
+                    Stage stage2 = (Stage) alert.getDialogPane().getScene().getWindow();
+                    stage2.getIcons().add(new Image(this.getClass().getResource("/icons/error.png").toString()));
+                    alert.showAndWait();
+                }
             }
+
         });
 
 
@@ -100,10 +127,15 @@ public class CreateCatalogController {
         btnCreateMyCatalog.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                if(!tfCatalogName.getText().trim().isEmpty() && tempAttributeList.size()!=0) {
+
+                  if(!Controller.listCatalogNames.contains(tfCatalogName.getText().trim().toUpperCase(Locale.ENGLISH))){
+
+
+                if (!tfCatalogName.getText().trim().isEmpty() && tempAttributeList.size() != 0) {
                     tableClass.setCatalogName(tfCatalogName.getText().trim().toUpperCase(Locale.ENGLISH).toString());
                     System.out.println("CATALOG İSMİ" + tableClass.getCatalogName().toString());
                     Controller controller = new Controller();
+
                     controller.listCatalogNames.add(tfCatalogName.getText().trim().toUpperCase(Locale.ENGLISH).toString());
 
                     databasemanagement dbcreate = new databasemanagement();
@@ -111,7 +143,7 @@ public class CreateCatalogController {
                     //table class objesi tablonun Katalog adı (tableClass.getCatalogName)
                     //kolon isimleri ve veri tiplerini içeriyor tableClass.getColumnNames , tableClass.getDataTypes
 
-                }else{
+                } else {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Error Dialog");
                     alert.setHeaderText("Ooops, Wrong Attempt!");
@@ -120,6 +152,21 @@ public class CreateCatalogController {
                     stage.getIcons().add(new Image(this.getClass().getResource("/icons/error.png").toString()));
                     alert.showAndWait();
                 }
+
+
+            }else {
+
+
+                      Alert alert = new Alert(Alert.AlertType.ERROR);
+                      alert.setTitle("Error Dialog");
+                      alert.setHeaderText("Ooops, Wrong Attempt!");
+                      alert.setContentText("The " + tfCatalogName.getText().toUpperCase(Locale.ENGLISH).trim()+" CATALOG IS ALREADY EXIST!\nYou are not allowed to create the same catalog with the same name");
+                      Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+                      stage.getIcons().add(new Image(this.getClass().getResource("/icons/error.png").toString()));
+                      alert.showAndWait();
+
+            }
+
             }
         });
 
