@@ -7,6 +7,7 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -16,11 +17,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="mainScreen" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="663.0" prefWidth="908.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<BorderPane fx:id="mainScreen" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="663.0" prefWidth="908.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <bottom>
       <HBox alignment="CENTER_RIGHT" spacing="5.0">
          <children>
-            <HBox alignment="TOP_CENTER" prefHeight="30.0" prefWidth="222.0" spacing="5.0">
+            <HBox alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="222.0" spacing="5.0">
                <children>
                   <Button fx:id="btnCatalogAdd" mnemonicParsing="false" onAction="#btnCatalogAdd" prefHeight="30.0" prefWidth="70.0">
                      <graphic>
@@ -43,7 +44,7 @@
                         <Insets />
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="btnCatalogDelete" mnemonicParsing="false" onAction="#btnCatalogDelete" prefHeight="30.0" prefWidth="70.0">
+                  <Button fx:id="btnCatalogDelete" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnCatalogDelete" HBox.hgrow="ALWAYS">
                      <graphic>
                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -137,10 +138,14 @@
       </VBox>
    </top>
    <left>
-      <VBox prefHeight="506.0" prefWidth="222.0" spacing="10.0" BorderPane.alignment="CENTER">
+      <VBox prefHeight="506.0" prefWidth="222.0" spacing="5.0" BorderPane.alignment="CENTER">
          <children>
+            <TextField fx:id="tfSearchCatalog" />
             <ListView fx:id="listView" prefHeight="549.0" VBox.vgrow="ALWAYS" />
          </children>
+         <BorderPane.margin>
+            <Insets left="2.0" top="5.0" />
+         </BorderPane.margin>
       </VBox>
    </left>
 </BorderPane>
