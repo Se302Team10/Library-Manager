@@ -14,15 +14,12 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
+import java.sql.*;
 import java.lang.*;
 import java.util.ArrayList;
 
-import java.sql.ResultSet;
+import java.util.List;
+
 public class databasemanagement {
 
 
@@ -76,11 +73,7 @@ public class databasemanagement {
              final int index = i;
              dynamicString.append(tableClass.getSpesificColumnName(index) + " text");
              if(i!=loopCtrl-1) dynamicString.append(", ");
-//              if (i != 0 && loopCtrl == i -1 ) { //spesifik column name yerine non spesifik olarak bakıp burda çevirmeye çalışacağız
-//                  dynamicString.append(" "+tableClass.getSpesificColumnName(index).toString().substring(1,tableClass.getSpesificColumnName(index).toString().length() - 1)+"  text");
-//              } else {
-//                  dynamicString.append(" " + tableClass.getSpesificColumnName(index).toString().substring(1, tableClass.getSpesificColumnName(index).toString().length() - 1) + "  text,");
-//              }
+
         }
          dynamicString.append(");");
 
@@ -96,41 +89,7 @@ public class databasemanagement {
             System.out.println(e.getMessage());
         }
     }
-    public void deleteRow(){
-        int key = 0;
-        String str = String.valueOf(key);
-        String sql = "DELETE FROM metatable WHERE id ='"+str+"' " ;
-        try (Connection conn = this.connect();)
-        {
-            PreparedStatement st = conn.prepareStatement(sql);
 
-            st.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-
-
-    }
-
-
-    public void editRow()
-    {    int key = 0;
-        String sql = "update metatable set name = ? where id = 1  ";
-
-
-        try (Connection conn = this.connect();)
-        {
-
-            PreparedStatement preparedStmt = conn.prepareStatement(sql);
-
-            preparedStmt.executeUpdate();
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-
-
-    }
 
  public ArrayList<String> metaTableSelect () {
         TableClass metaQuery = new TableClass();
@@ -147,7 +106,7 @@ public class databasemanagement {
         }
         return null;
  }
-    public String metaId (String clicked) {
+       public String metaId (String clicked) {
         String sql = "select id from metatable where name = '"+clicked+"' ";
         String str ;
         try ( Connection conn = this.connect();
@@ -160,6 +119,20 @@ public class databasemanagement {
         }
         return null;
     }
+    public int metaIdInt (String clicked) {
+        String sql = "select id from metatable where name = '"+clicked+"' ";
+
+        try ( Connection conn = this.connect();
+              Statement  stmt = conn.createStatement();
+              ResultSet  rs   = stmt.executeQuery(sql);  ) {
+
+            return rs.getInt("id");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return -1;
+    }
+
 
     public void   TableFiller (String metaID,TableView table,ObservableList<ObservableList> tableList ) {
 
@@ -203,5 +176,119 @@ public class databasemanagement {
         }
 
     }
+    public void deleteCatalogfromMeta (int id ) {
+        String idWhere = String.valueOf(id);
+        String sqlDelete = "DELETE From metatable Where id ='"+idWhere+"' ";
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sqlDelete)) {
+
+            // set the corresponding param
+            pstmt.setInt(1, id);
+            // execute the delete statement
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    public void dropCatalog (int id) {
+        String catalogName = String.valueOf(id);
+        String sqlDrop = " Drop TABLE '"+catalogName+"' ";
+        try ( Connection conn = this.connect();
+              Statement  stmt = conn.createStatement();) {
+            stmt.executeUpdate(sqlDrop);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+
+
+        }
+    }
+    public  List<String> getColumns(String tableName, String schemaName) {
+
+        ResultSet rs=null;
+
+        ResultSetMetaData rsmd=null;
+        PreparedStatement stmt=null;
+        List<String> columnNames =null;
+        String qualifiedName = (schemaName!=null&&!schemaName.isEmpty())?(schemaName+"."+tableName):tableName;
+        try{
+            Connection conn = this.connect();
+            stmt=conn.prepareStatement("select * from "+qualifiedName+" where 0=1");
+            rs=stmt.executeQuery();//you'll get an empty ResultSet but you'll still get the metadata
+            rsmd=rs.getMetaData();
+            columnNames = new ArrayList<String>();
+            for(int i=1;i<=rsmd.getColumnCount();i++)
+                columnNames.add(rsmd.getColumnLabel(i));
+        }catch(SQLException e){
+
+        }
+        finally{
+            if(rs!=null)
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+
+                }
+            if(stmt!=null)
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+
+                }
+        }
+        return columnNames;
+    }
+     public void insertCatalog (List<String> ColumnNames) { /*User'ın girdiğin şeyleri 2.parametre olarak al abi buraya */
+         List<Object> data = new ArrayList<>();
+         //you will populate this list
+
+         //getting the column names
+         List<String> columnNames = getColumns("MyTable", "MyDB");
+
+         String insertColumns = "";
+         String insertValues = "";
+
+         if(columnNames != null && columnNames.size() > 0){
+             insertColumns += columnNames.get(0);
+             insertValues += "?";
+         }
+
+
+         for(int i = 1; i < columnNames.size();i++){
+             insertColumns += ", " + columnNames.get(i) ;
+             insertValues += "?";
+         }
+
+         String insertSql = "INSERT INTO MyDB.MyTable (" + insertColumns + ") values(" + insertValues + ")";
+
+         try{ Connection conn = this.connect();
+
+             PreparedStatement  ps = conn.prepareStatement(insertSql);
+
+
+             ps.execute(); //this inserts your data
+         }catch(SQLException sqle){
+             //do something with it
+         }
+     }
+
+   public void deleteRow(int id, String tableName) { //ön taraftan iki parametre alacak, tablo ismi ve seçilen row'un id'si
+        String str = String.valueOf(id);
+        String sql = "DELETE From '"+tableName+"' Where id ='"+str+"' ";
+       try (Connection conn = this.connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+           // set the corresponding param
+           pstmt.setInt(1, id);
+           // execute the delete statement
+           pstmt.executeUpdate();
+
+       } catch (SQLException e) {
+           System.out.println(e.getMessage());
+       }
+
+   }
 
  }

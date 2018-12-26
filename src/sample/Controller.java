@@ -539,7 +539,7 @@ public class Controller {
 
 @FXML
     public void btnCatalogDelete(){
-
+        databasemanagement dbcreate = new databasemanagement();
         if(listView.getSelectionModel().getSelectedItem()!=null){
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Confirmation Dialog");
@@ -553,7 +553,8 @@ public class Controller {
                 //dropSelectedCatalog(listView.getSelectionModel().getSelectedItem().toString());
                 int index= listView.getItems().indexOf(listView.getSelectionModel().getSelectedItem());
                 listView.getItems().remove(listView.getSelectionModel().getSelectedItem());
-
+                dbcreate.deleteCatalogfromMeta(index);
+                dbcreate.dropCatalog(index);
                 //ilgili method önce seçilen itemin metaTabledaki IDsini alacak
                 // sonra metaTable'dan seçilen katalog ismini silecek
                 //sonra alınan ID ye ait olan katalog tablosunu silecek.
