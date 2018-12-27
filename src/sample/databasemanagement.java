@@ -64,7 +64,8 @@ public class databasemanagement {
      * Create a new table in the test database
      *
      */
-    public  void createNewTable(TableClass tableClass) {
+
+    public  void createNewTable(TableClass tableClass) throws SQLException {
         int key =InsertMetatable(tableClass.getCatalogName());
         String str = String.valueOf(key);
         StringBuilder dynamicString = new StringBuilder("CREATE TABLE '"+str.toString()+"' ("   +"id integer PRIMARY KEY AUTOINCREMENT, ");
@@ -81,18 +82,16 @@ public class databasemanagement {
 
         System.out.println(dynamicString.toString());
 
-        try (Connection conn = this.connect();
-             Statement stmt = conn.createStatement())
-        {
+        Connection conn = this.connect();
+             Statement stmt = conn.createStatement();
+
             // create a new table
             stmt.execute(dynamicString.toString());
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
+
     }
 
 
- public ArrayList<String> metaTableSelect () {
+    public ArrayList<String> metaTableSelect () {
 
         TableClass metaQuery = new TableClass();
         String sql = "Select name From metatable";
@@ -180,6 +179,7 @@ public class databasemanagement {
                 TableColumn col = new TableColumn(rs.getMetaData().getColumnName(i + 1));
                 col.setCellValueFactory(new Callback<CellDataFeatures<ObservableList, String>, ObservableValue<String>>() {
                     public ObservableValue<String> call(CellDataFeatures<ObservableList, String> param) {
+
                         return new SimpleStringProperty(param.getValue().get(j).toString());
                     }
                 });
@@ -300,61 +300,63 @@ public class databasemanagement {
     }
 
     public void insertIntoSelectedCatalog(int tableID,TableClass tableClass){
+        String str = String.valueOf(tableID);
+        StringBuilder sb = new StringBuilder("INSERT INTO ");
+        sb.append("'"+str+"'");
+        sb.append("(");
 
-        String stringTableID= String.valueOf(tableID);
-        String sql = "Insert INTO '"+tableClass.getCatalogName()+"'";
-        String sql2 = "( )";
-        String sql3 = "VALUES ()";
-        for(int i =0;i<tableClass.getColumnNames().size();i++){
 
+        for (int i =0;i<tableClass.getColumnNames().size();i++){
+            System.out.println("column name= "+tableClass.getColumnNames().get(i) );
+        }
+
+        for (int i =0;i<tableClass.getUserInputs().size();i++){
+            System.out.println("input = "+tableClass.getUserInputs().get(i) );
         }
 
 
+
+        for(int i =0;i<tableClass.getColumnNames().size();i++){
+            sb.append ("'"+tableClass.getSpesificColumnName(i)+"'");
+            if(tableClass.getColumnNames().size()-1!=i){
+                sb.append(",");
+            }
+            if(i==tableClass.getColumnNames().size()-1) {
+                sb.append(")");
+            }
+        }
+
+        sb.append(" VALUES (");
+        for(int i =0;i<tableClass.getUserInputs().size();i++) {
+            sb.append ("'"+tableClass.getUserInputs().get(i)+"'");
+            if(tableClass.getUserInputs().size()-1!=i){
+                sb.append(",");
+            }
+            if(i==tableClass.getColumnNames().size()-1) sb.append(");");
+
+        }
+        System.out.println("SQL ===>> " + sb);
+        try (Connection conn = this.connect();
+             PreparedStatement psmt = conn.prepareStatement(sb.toString()); ) {
+            psmt.executeUpdate();
+
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
     }
 
-    public void insertCatalog (List<String> columnNames) { /*User'ın girdiğin şeyleri 2.parametre olarak al abi buraya */
 
-       //  List<Object> data = new ArrayList<>();
-         //you will populate this list
-
-         //getting the column names
-          columnNames = getColumns("MyTable", "MyDB");
-
-         String insertColumns = "";
-         String insertValues = "";
-
-         if(columnNames != null && columnNames.size() > 0){
-             insertColumns += columnNames.get(0);
-             insertValues += "?";
-         }
-
-         for(int i = 1; i < columnNames.size();i++){
-             insertColumns += ", " + columnNames.get(i) ;
-             insertValues += "?";
-         }
-
-         String insertSql = "INSERT INTO MyDB.MyTable (" + insertColumns + ") values(" + insertValues + ")";
-
-         try{ Connection conn = this.connect();
-
-             PreparedStatement  ps = conn.prepareStatement(insertSql);
-
-
-             ps.execute(); //this inserts your data
-         }catch(SQLException sqle){
-             //do something with it
-         }
-
-     }
-
-    public void deleteRow(int id, String tableName) { //ön taraftan iki parametre alacak, tablo ismi ve seçilen row'un id'si
-        String str = String.valueOf(id);
-        String sql = "DELETE From '"+tableName+"' Where id ='"+str+"' ";
+    public void deleteRow(int rowid, String tableName) { //ön taraftan iki parametre alacak, tablo ismi ve seçilen row'un id'si
+        String str = String.valueOf(rowid);
+        String sql = "DELETE From '"+tableName+"' Where id ='"+str+"';";
+        System.out.println("delete SQL " + sql);
        try (Connection conn = this.connect();
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
            // set the corresponding param
-           pstmt.setInt(1, id);
+          // pstmt.setInt(1, id);
            // execute the delete statement
            pstmt.executeUpdate();
 
@@ -364,4 +366,15 @@ public class databasemanagement {
 
    }
 
- }
+
+
+
+
+
+
+
+
+
+
+
+}

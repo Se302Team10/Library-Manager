@@ -1,5 +1,8 @@
 package sample;
-
+import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.scene.control.TableView;
+import javafx.util.Callback;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -17,6 +20,11 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import java.util.Locale;
 import java.util.Optional;
+import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.scene.control.TableView;
+import javafx.util.Callback;
+import javafx.beans.property.SimpleStringProperty;
+
 import javafx.scene.control.TableView;
 
 
@@ -68,12 +76,9 @@ public class Controller {
     public ObservableList<String> listTempAttributes = FXCollections.observableArrayList();
 
 
-    public ObservableList<String> returnCOLUMNEDIT = FXCollections.observableArrayList();
-
-
-
     public static ObservableList<String> listCatalogNames = FXCollections.observableArrayList(); // anapenceredeki listview'bilgileri burdan çekiliyor
     public TableView<ObservableList> tableView = new TableView<ObservableList>();
+
     //private TableView table;
     private ObservableList<ObservableList> at = FXCollections.observableArrayList();
 
@@ -83,7 +88,10 @@ public class Controller {
         mainScreen.setCenter(tableView);
         if(listCatalogNames.size()!=0){
             listView.getSelectionModel().selectFirst();
+
         }
+
+
         databasemanagement dbcreate = new databasemanagement();
         listCatalogNames.setAll(dbcreate.metaTableSelect());
 
@@ -124,13 +132,13 @@ public class Controller {
             if(tableView.getSelectionModel().getSelectedItem()!=null) {
                 selectedTableViewItem = (ObservableList) newValue;
 
-                System.out.println("selected item of table"+ (ObservableList) newValue);
-                System.out.println("another way to get");
+               // System.out.println("selected item of table"+ (ObservableList) newValue);
+               // System.out.println("another way to get");
+/*
                 for (int i =0;i<((ObservableList) newValue).size();i++){
                     //0 dan başlatılırsa ID değeri de geliyor! id + diğer kolonlar!
                     System.out.println(((ObservableList) newValue).get(i).toString());
-                }
-
+                }*/
             }
         }
     });
@@ -307,9 +315,9 @@ public class Controller {
 
 @FXML
     public void btnEditInput(){
-
         if(tableView.getSelectionModel().getSelectedItem()!=null){
-
+            TableClass willSend= new TableClass();
+            databasemanagement db = new databasemanagement();
             Dialog<ButtonType> dialog=new Dialog<>();
             dialog.initOwner(mainScreen.getScene().getWindow()); //Asssinging parrent of dialog pane
 
@@ -323,19 +331,23 @@ public class Controller {
           *
           * according to return value btnEditInput method will create input textfields to let the user update old input.**/
        //  TableClass returnedObject=returnHereTableClassObject(selectedListViewItem.toString()); ///**** IMPORTANT it will be activated
-
             TableClass ReturnedObject= new TableClass();
+            int rowID=Integer.parseInt(selectedTableViewItem.get(0).toString());
 
-            ReturnedObject.setColumnNames("Name");
-            ReturnedObject.setColumnNames("Year");
-            ReturnedObject.setColumnNames("Genree");
+            System.out.println(" ilk seçilen user inputs>>>>"); // seçilen input bilgileri  tableclass.userinputs listeye atılıyor
+            for (int i=1;i<selectedTableViewItem.size();i++){
+                System.out.println(selectedTableViewItem.get(i).toString());
 
-            TextField[] textFields = new TextField[ReturnedObject.getColumnNames().size()];
-            for (int i = 0; i < ReturnedObject.getColumnNames().size();i++){
+                ReturnedObject.setUserInputs(selectedTableViewItem.get(i).toString());
+            }
+
+
+            TextField[] textFields = new TextField[ReturnedObject.getUserInputs().size()]; /// ESKİ BİLGİLER TEXTFİELDA YAZDIRILIYOR!
+            for (int i = 0; i < ReturnedObject.getUserInputs().size();i++){
 
               //  Label label = new Label(sampleReturnedObject.getColumnNames().get(i).toString().toUpperCase());
                 textFields[i]=new TextField();
-                textFields[i].setPromptText(ReturnedObject.getColumnNames().get(i).toString().toUpperCase());
+                textFields[i].setText(ReturnedObject.getUserInputs().get(i).toString().toUpperCase());
                 HBox hBox =new HBox();
                 hBox.getChildren().addAll(textFields[i]);
                 vBoxMainFrame.getChildren().add(hBox);
@@ -350,34 +362,57 @@ public class Controller {
                 @Override
                 public void handle(ActionEvent event) {
 
-                /** callTheUpdateRowSql();
-                 * firstly, the method must find the exact same row from the database according to user selection on tablview
-                 * (first paramater will provide those existing/old information)
-                 *
-                 *then
-                 *
-                 *
-                 * it must execute update sql and set new inputs into database from a list which is in second paramater
-                 * Assume sending list in as parameters as ObservableList;
-                 *
-                 * you can get items of observablelist like this
-                 *
-                 *ObservableList myList = FXCollections.observableArrayList();
-                 *  for (int i = 0; i<myList.size();i++){
-                 System.out.println(i+".item: " + myList.get(i));
-                 }
-                 * **/
-                    ObservableList selectedItem = FXCollections.observableArrayList();
-                    ObservableList newInputs = FXCollections.observableArrayList();
+                    System.out.println("__________BUTTON____ACTION");
 
-                    for (int i = 0; i<ReturnedObject.getColumnNames().size();i++){
-                        //tableview will contains observableList objects therefore we can get selectedItem as an instance of ObservableList
-                        selectedItem.add(tableView.getSelectionModel().getSelectedItem());
-                        newInputs.add(textFields[i].getText().trim().toUpperCase().toString());
+                    System.out.println("tw size" + selectedTableViewItem.size());
+
+                    for (int i=1;i<selectedTableViewItem.size();i++){
+
+                        willSend.setUserInputs(textFields[i-1].getText().toUpperCase(Locale.ENGLISH).trim());
 
                     }
 
-                  // callTheUpdateRowSql(selectedItem,newInputs);
+                    int metaID = db.metaIdInt(selectedListViewItem);
+
+                    for (int i=0;i<db.getAllColumns(metaID).getColumnNames().size();i++){
+                        willSend.setUserInputs(db.getAllColumns(metaID).getColumnNames().get(i));
+                        System.out.println("eklendi _? " +db.getAllColumns(metaID).getColumnNames().get(i)  );
+                    }
+
+
+
+
+
+                    db.getAllColumns(metaID);
+                    willSend.getUserInputs().setAll(db.getAllColumns(metaID).getColumnNames());
+
+                    System.out.println("user inputsize"+ willSend.getUserInputs().size());
+                    System.out.println("column namess ize"+ willSend.getColumnNames().size());
+
+
+
+                    String tablename=db.metaId(selectedListViewItem);
+                    db.deleteRow(rowID,tablename);
+                    db.insertIntoSelectedCatalog(metaID,willSend);
+
+
+
+
+
+
+
+
+                    /*
+
+                    for(int i =0;i<ReturnedObject.getUserInputs().size();i++){
+                        System.out.println("getting user input " + ReturnedObject.getUserInputs().get(i));
+                    }
+
+*/
+
+
+
+
 
                 }
             });
@@ -438,7 +473,6 @@ public class Controller {
 
 @FXML
    public void btnAddInput() {
-
         if (listView.getSelectionModel().getSelectedItem() != null) {
             databasemanagement dbInsert = new databasemanagement();
             Dialog<ButtonType> dialog = new Dialog<>();
@@ -475,6 +509,8 @@ public class Controller {
                      * Bu liste sql Methodunu yazan sınıf tarafından parametre olarak alınacak.
                      * */
                     //createCatalogTable(tableClass.getUserInputs())
+
+                    returnObject.getUserInputs().clear();
 
 
                     for (int i = 0; i < returnObject.getColumnNames().size(); i++) {
@@ -537,7 +573,6 @@ public class Controller {
                 int metaID=dbDelete.metaIdInt(selectedListViewItem);
                 System.out.println("META ID RETURNED = " + metaID);
 
-
                 dbDelete.dropCatalog(metaID);
 
                 dbDelete.deleteCatalogfromMeta(metaID);
@@ -590,6 +625,16 @@ public class Controller {
                 selectedItem = (ObservableList) tableView.getSelectionModel().getSelectedItem();
                 //database methodu 2. parametresinde aldığı observableListi 1. parametresinde aldığı ilgili catalog tablosundan bulup silecek
                 // deleteSelectedTupleFromCatalogTable(listView.getSelectionModel().getSelectedItem(),selectedItem);
+
+                databasemanagement dbdelete=new databasemanagement();
+                String metaID=dbdelete.metaId(selectedListViewItem);
+
+                System.out.println("row ID => ? " + selectedTableViewItem.get(0));
+
+                int id=Integer.parseInt(selectedTableViewItem.get(0).toString());
+
+                System.out.println("DELETION A GÖNDERİLEN PARAMETRELER >>> "+ id+ "   " + metaID);
+                dbdelete.deleteRow(id,metaID);
             }else{
                 //input silme işleminden vazgeçildi
             }
@@ -634,6 +679,10 @@ public class Controller {
     }
 
     }
+
+
+
+
 
 
 

@@ -12,6 +12,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.sql.SQLException;
 import java.util.Locale;
 
 public class CreateCatalogController {
@@ -57,7 +58,6 @@ public class CreateCatalogController {
         btnAddAttribute.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-
 
                 String userText=tfAttribute.getText().trim().toUpperCase(Locale.ENGLISH);
                 String alphabet="ABCDEFGHUKLMNIOPQRSTVXYZ_";
@@ -127,22 +127,32 @@ public class CreateCatalogController {
         btnCreateMyCatalog.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-
                   if(!Controller.listCatalogNames.contains(tfCatalogName.getText().trim().toUpperCase(Locale.ENGLISH))){
-
-
                 if (!tfCatalogName.getText().trim().isEmpty() && tempAttributeList.size() != 0) {
                     tableClass.setCatalogName(tfCatalogName.getText().trim().toUpperCase(Locale.ENGLISH).toString());
                     System.out.println("CATALOG İSMİ" + tableClass.getCatalogName().toString());
                     Controller controller = new Controller();
-
                     controller.listCatalogNames.add(tfCatalogName.getText().trim().toUpperCase(Locale.ENGLISH).toString());
-
                     databasemanagement dbcreate = new databasemanagement();
-                    dbcreate.createNewTable(tableClass);
+                    try {
+                        dbcreate.createNewTable(tableClass);
+                    }catch (SQLException e){
+
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error Dialog");
+                        alert.setHeaderText("Ooops, Wrong Attempt!");
+                        alert.setContentText("Catalog Could NOT Created ! Please Try again!");
+                        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+                        stage.getIcons().add(new Image(this.getClass().getResource("/icons/error.png").toString()));
+                        alert.showAndWait();
+
+
+                    }
+
+                    tempAttributeList.clear();
+                    tfCatalogName.clear();
                     //table class objesi tablonun Katalog adı (tableClass.getCatalogName)
                     //kolon isimleri ve veri tiplerini içeriyor tableClass.getColumnNames , tableClass.getDataTypes
-
                 } else {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Error Dialog");
