@@ -348,6 +348,8 @@ public class databasemanagement {
     }
 
 
+
+
     public void deleteRow(int rowid, String tableName) { //ön taraftan iki parametre alacak, tablo ismi ve seçilen row'un id'si
         String str = String.valueOf(rowid);
         String sql = "DELETE From '"+tableName+"' Where id ='"+str+"';";

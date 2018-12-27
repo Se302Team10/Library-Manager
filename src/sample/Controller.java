@@ -365,18 +365,34 @@ public class Controller {
                     System.out.println("__________BUTTON____ACTION");
 
                     System.out.println("tw size" + selectedTableViewItem.size());
-
+                    ObservableList<String> row = FXCollections.observableArrayList();
+                    row.add(String.valueOf(rowID));
                     for (int i=1;i<selectedTableViewItem.size();i++){
 
                         willSend.setUserInputs(textFields[i-1].getText().toUpperCase(Locale.ENGLISH).trim());
 
+
                     }
+
+                    for (int i=0;i<willSend.getUserInputs().size();i++){
+                        row.add(String.valueOf(willSend.getUserInputs().get(i)));
+                    }
+
+
+                    int index=tableView.getItems().indexOf(selectedTableViewItem);
+                    tableView.getItems().remove(selectedTableViewItem);
+
+                    tableView.getItems().add(index,row);
+
+                  //  tableView.getItems().add(row);
+
+
 
                     int metaID = db.metaIdInt(selectedListViewItem);
 
                     for (int i=0;i<db.getAllColumns(metaID).getColumnNames().size();i++){
-                        willSend.setUserInputs(db.getAllColumns(metaID).getColumnNames().get(i));
-                        System.out.println("eklendi _? " +db.getAllColumns(metaID).getColumnNames().get(i)  );
+                        willSend.setColumnNames(db.getAllColumns(metaID).getColumnNames().get(i).toString());
+                        System.out.println("COLUMN EKLENDI>>> " + db.getAllColumns(metaID).getColumnNames().get(i)  );
                     }
 
 
@@ -384,7 +400,9 @@ public class Controller {
 
 
                     db.getAllColumns(metaID);
-                    willSend.getUserInputs().setAll(db.getAllColumns(metaID).getColumnNames());
+
+
+
 
                     System.out.println("user inputsize"+ willSend.getUserInputs().size());
                     System.out.println("column namess ize"+ willSend.getColumnNames().size());
@@ -511,14 +529,17 @@ public class Controller {
                     //createCatalogTable(tableClass.getUserInputs())
 
                     returnObject.getUserInputs().clear();
+                    ObservableList<String> row = FXCollections.observableArrayList();
 
 
+                    row.add("-1");
                     for (int i = 0; i < returnObject.getColumnNames().size(); i++) {
                         //tableview will contains observableList objects therefore we can get selectedItem as an instance of ObservableList
                         returnObject.setUserInputs(fields[i].getText().trim().toUpperCase(Locale.ENGLISH).trim());
+                                    row.add(fields[i].getText().trim().toUpperCase(Locale.ENGLISH).trim());
                     }
 
-
+                    tableView.getItems().add(row);
                     dbInsert.insertIntoSelectedCatalog(metaID,returnObject);
 
 

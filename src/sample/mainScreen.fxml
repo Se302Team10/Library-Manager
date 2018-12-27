@@ -23,7 +23,7 @@
          <children>
             <HBox alignment="TOP_CENTER" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="222.0" spacing="5.0">
                <children>
-                  <Button fx:id="btnCatalogAdd" mnemonicParsing="false" onAction="#btnCatalogAdd" prefHeight="30.0" prefWidth="70.0">
+                  <Button fx:id="btnCatalogAdd" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnCatalogAdd" HBox.hgrow="ALWAYS">
                      <graphic>
                         <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -31,18 +31,6 @@
                            </image>
                         </ImageView>
                      </graphic>
-                  </Button>
-                  <Button fx:id="btnCatalogEdit" mnemonicParsing="false" onAction="#editCatalog" prefHeight="30.0" prefWidth="70.0">
-                     <graphic>
-                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../icons/edit.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                     <HBox.margin>
-                        <Insets />
-                     </HBox.margin>
                   </Button>
                   <Button fx:id="btnCatalogDelete" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnCatalogDelete" HBox.hgrow="ALWAYS">
                      <graphic>
