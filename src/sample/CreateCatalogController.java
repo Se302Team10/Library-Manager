@@ -60,7 +60,7 @@ public class CreateCatalogController {
             public void handle(ActionEvent event) {
 
                 String userText=tfAttribute.getText().trim().toUpperCase(Locale.ENGLISH);
-                String alphabet="ABCDEFGHUKLMNIOPQRSTVXYZ_";
+                String alphabet="ABCDEFGHUJKLMNIOPQRSTVXYZ_";
                 try {
 
                     String letter;
@@ -179,6 +179,12 @@ public class CreateCatalogController {
 
             }
         });
+
+
+
+
+
+
 
 
     }
